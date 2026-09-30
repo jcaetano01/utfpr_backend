@@ -1,145 +1,93 @@
-const express = require("express");
+﻿const express = require("express");
+
 const router = express.Router();
 
-//Funções
 function adicao(a, b) {
-  return a + b;
+  return Number(a) + Number(b);
 }
 
 function subtracao(a, b) {
-  return a - b;
+  return Number(a) - Number(b);
 }
 
 function multiplicacao(a, b) {
-  return a * b;
+  return Number(a) * Number(b);
 }
 
 function divisao(a, b) {
-  if (b === 0) {
+  if (Number(b) === 0) {
     return "Erro: divisão por zero!";
   }
-  return a / b;
+  return Number(a) / Number(b);
 }
 
-//Rotas 
-const http = require("http");
-
-const porta = 3000;
-
-const servidor = http.createServer((req, res) => {
-
-//ADICAO
-  if (req.method === "GET" && req.url === "/adicao") {
-    res.writeHead(200, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({
-      mensagem: "Você esta na rota adição"
-    }));
+router.get("/adicao", (req, res) => {
+  if (req.query.a != undefined && req.query.b != undefined) {
+    return res.json({ resultado: adicao(req.query.a, req.query.b) });
   }
-
-  else if (req.method === "POST" && req.url === "/adicao") {
-    let corpo = "";
-
-    req.on("data", (chunk) => {
-      corpo += chunk;
-    });
-
-    req.on("end", () => {
-      const { a, b } = JSON.parse(corpo);
-
-      res.writeHead(201, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({
-        mensagem: "Requisição POST recebida com sucesso",
-        dados: { resultado: adicao(Number(a), Number(b)) }
-      }));
-    });
-  }
-
-  //SUBTRACAO
-  if (req.method === "GET" && req.url === "/subtracao") {
-    res.writeHead(200, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({
-      mensagem: "Você esta na rota subtração"
-    }));
-  }
-
-  else if (req.method === "POST" && req.url === "/subtracao") {
-    let corpo = "";
-
-    req.on("data", (chunk) => {
-      corpo += chunk;
-    });
-
-    req.on("end", () => {
-      const { a, b } = JSON.parse(corpo);
-
-      res.writeHead(201, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({
-        mensagem: "Requisição POST recebida com sucesso",
-        dados: { resultado: subtracao(Number(a), Number(b)) }
-      }));
-    });
-  }
-
-  //MULTIPLICACAO
-  if (req.method === "GET" && req.url === "/multiplicacao") {
-    res.writeHead(200, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({
-      mensagem: "Você esta na rota multiplicação"
-    }));
-  }
-
-  else if (req.method === "POST" && req.url === "/multiplicacao") {
-    let corpo = "";
-
-    req.on("data", (chunk) => {
-      corpo += chunk;
-    });
-
-    req.on("end", () => {
-      const { a, b } = JSON.parse(corpo);
-
-      res.writeHead(201, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({
-        mensagem: "Requisição POST recebida com sucesso",
-        dados: { resultado: multiplicacao(Number(a), Number(b)) }
-      }));
-    });
-  }
-
-  //DIVISAO
-  if (req.method === "GET" && req.url === "/divisao") {
-    res.writeHead(200, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({
-      mensagem: "Você esta na rota divisão"
-    }));
-  }
-
-  else if (req.method === "POST" && req.url === "/divisao") {
-    let corpo = "";
-
-    req.on("data", (chunk) => {
-      corpo += chunk;
-    });
-
-    req.on("end", () => {
-      const { a, b } = JSON.parse(corpo);
-
-      res.writeHead(201, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({
-        mensagem: "Requisição POST recebida com sucesso",
-        dados: { resultado: divisao(Number(a), Number(b)) }
-      }));
-    });
-  }
-
-  else {
-    res.writeHead(404, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({
-      erro: "Rota não encontrada"
-    }));
-  }
+  return res.json({ mensagem: "Você esta na rota adição" });
 });
 
-servidor.listen(porta, () => {
-  console.log(`Servidor executando em http://localhost:${porta}`);
+router.get("/subtracao", (req, res) => {
+  if (req.query.a != undefined && req.query.b != undefined) {
+    return res.json({ resultado: subtracao(req.query.a, req.query.b) });
+  }
+  return res.json({ mensagem: "Você esta na rota subtração" });
 });
+
+router.get("/multiplicacao", (req, res) => {
+  if (req.query.a != undefined && req.query.b !=undefined) {
+    return res.json({ resultado: multiplicacao(req.query.a, req.query.b) });
+  }
+  return res.json({ mensagem: "Você esta na rota multiplicação" });
+});
+
+router.get("/divisao", (req, res) => {
+  if (req.query.a != undefined && req.query.b != undefined) {
+    return res.json({ resultado: divisao(req.query.a, req.query.b) });
+  }
+  return res.json({ mensagem: "Você esta na rota divisão" });
+});
+
+router.post("/adicao", (req, res) => {
+  const { a = 0, b = 0 } = req.body;
+  if (a === undefined || b === undefined || Number.isNaN(Number(a)) || Number.isNaN(Number(b))) {
+    return res.status(400).json({ erro: "Envie valores numéricos para a e b." });
+  }
+  return res.json({ resultado: adicao(a, b) });
+});
+
+router.post("/subtracao", (req, res) => {
+  const { a = 0, b = 0 } = req.body;
+  if (a === undefined || b === undefined || Number.isNaN(Number(a)) || Number.isNaN(Number(b))) {
+    return res.status(400).json({ erro: "Envie valores numéricos para a e b." });
+  }
+  return res.json({ resultado: subtracao(a, b) });
+});
+
+router.post("/multiplicacao", (req, res) => {
+  const { a = 0, b = 0 } = req.body;
+  if (a === undefined || b === undefined || Number.isNaN(Number(a)) || Number.isNaN(Number(b))) {
+    return res.status(400).json({ erro: "Envie valores numéricos para a e b." });
+  }
+  return res.json({ resultado: multiplicacao(a, b) });
+});
+
+router.post("/divisao", (req, res) => {
+  const { a = 0, b = 0 } = req.body;
+  if (a === undefined || b === undefined || Number.isNaN(Number(a)) || Number.isNaN(Number(b))) {
+    return res.status(400).json({ erro: "Envie valores numéricos para a e b." });
+  }
+  return res.json({ resultado: divisao(a, b) });
+});
+module.exports = {
+  adicao,
+  subtracao,
+  multiplicacao,
+  divisao,
+  router,
+};
+
+
+
+
