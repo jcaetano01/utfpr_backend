@@ -2,7 +2,8 @@
 const lodash = require("lodash");
 const operacoes = require("./operacoes");
 
-// Resultados no console
+
+
 console.log("8 + 4 =", operacoes.adicao(8, 4));
 console.log("15 - 7 =", operacoes.subtracao(15, 7));
 console.log("6 * 3 =", operacoes.multiplicacao(6, 3));
