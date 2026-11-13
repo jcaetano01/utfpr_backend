@@ -1,0 +1,1 @@
+module.exports = `Duas requisições simultâneas podem consultar o mesmo e-mail antes que qualquer uma insira o usuário. Ambas podem não encontrar duplicidade e inserir, causando uma condição de corrida. A restrição UNIQUE faz o banco rejeitar a segunda inserção com ER_DUP_ENTRY. A API deve converter esse erro em uma resposta 409.`;
